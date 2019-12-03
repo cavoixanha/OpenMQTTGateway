@@ -32,7 +32,8 @@ extern void MQTTtoBT(char * topicOri, JsonObject& RFdata);
 /*----------------------BT topics & parameters-------------------------*/
 #define subjectBTtoMQTT  Base_Topic Gateway_Name "/BTtoMQTT/"
 #define subjectMQTTtoBTset  Base_Topic Gateway_Name "/commands/MQTTtoBT/set"
-#define TimeBtw_Read 55555 //define default time between 2 scans
+// #define TimeBtw_Read 12555 //define default time between 2 scans
+#define TimeBtw_Read 555555 //define default time between 2 scans
 #define MinimumRSSI -90 //default minimum rssi value, all the devices below -90 will not be reported
 #define Scan_duration 10 //define the time for a scan
 #define HM-10
