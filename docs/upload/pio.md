@@ -25,7 +25,7 @@ default_envs = esp32dev-rf
 ;default_envs = ttgo-lora32-v1
 ```
 
-If you don't know which env to activate you can refer to [devices](prerequisites/devices).
+If you don't know which env to activate you can refer to [devices](../prerequisites/devices).
 
 The different listed configurations represents some standard environments, to overload them with special parameters or modules you can modify the config files. The definitions coming from [platformio.ini](https://github.com/1technophile/OpenMQTTGateway/blob/development/platformio.ini) file and config files are cumulative.
 The main config file is [user_config.h](https://github.com/1technophile/OpenMQTTGateway/blob/development/main/User_config.h), added to it you have one config file per gateway, sensor or actuator, you will find them in the [main](https://github.com/1technophile/OpenMQTTGateway/tree/development/main) folder.
@@ -75,6 +75,28 @@ home/OpenMQTTGateway/LWT Online
 home/OpenMQTTGateway/version
 ```
 
+# OTA
+With PIO you can also upload the firmware through Over the Air, so as to do that you can add the upload options flags used below, `upload_port` is the IP adress of your ESP:
+
+``` ini
+[env:esp32-ble]
+platform = ${com.esp32_platform}
+board = esp32dev
+board_build.partitions = min_spiffs.csv
+lib_deps =
+  ${com-esp.lib_deps}
+  ${libraries.ble}
+build_flags =
+  ${com-esp.build_flags}
+  '-DZgatewayBT="BT"'
+  '-DGateway_Name="OpenMQTTGateway_ESP32"'
+upload_protocol = espota
+upload_port = 192.168.1.22
+upload_flags =
+  --auth=OTAPASSWORD
+  --port=8266
+```
+
 # API
 With the V0.9 we added the support of json for receiving and publishing.
 Per default Json reception and Json publication is activated, the previous simple reception mode is also activated to avoid regression on commands.
@@ -100,7 +122,7 @@ If you are using platformio you can also comment the definitions above and defin
 ```
 
 Note that depending on the environment the default platformio.ini has common option defined see sections:
-```
+``` ini
 [com-arduino]
 [com-esp]
 ```
@@ -111,3 +133,5 @@ If you want to use HASS MQTT discovery you need to have
 `#define ZmqttDiscovery "HADiscovery"`
 uncommented.
 Added to that auto discovery box should be selected into your Home Assistant MQTT integration configuration.
+
+With an ESP if you did not set your network and mqtt parameters manualy you can now open the [web portal configuration](portal.md).

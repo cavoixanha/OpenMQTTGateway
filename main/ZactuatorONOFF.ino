@@ -4,7 +4,7 @@
    Act as a wifi or ethernet gateway between your 433mhz/infrared IR signal and a MQTT broker 
    Send and receiving command by MQTT
  
-    Output pin defined to High or Low
+    Output GPIO defined to High or Low
   
     Copyright: (c)Florian ROBERT
     
@@ -30,49 +30,50 @@
 
 #ifdef ZactuatorONOFF
 
-#ifdef jsonReceiving
-void MQTTtoONOFF(char * topicOri, JsonObject& ONOFFdata){
-  
-  if (strcmp(topicOri,subjectMQTTtoONOFF) == 0){
-    trc(F("MQTTtoONOFF json data analysis"));
-    int boolSWITCHTYPE = ONOFFdata["state"] | 99;
-    int pin = ONOFFdata["pin"] | ACTUATOR_ONOFF_PIN;
+#  ifdef jsonReceiving
+void MQTTtoONOFF(char* topicOri, JsonObject& ONOFFdata) {
+  if (cmpToMainTopic(topicOri, subjectMQTTtoONOFF)) {
+    Log.trace(F("MQTTtoONOFF json data analysis" CR));
+    int boolSWITCHTYPE = ONOFFdata["cmd"] | 99;
+    int gpio = ONOFFdata["gpio"] | ACTUATOR_ONOFF_GPIO;
     if (boolSWITCHTYPE != 99) {
-      trc(F("MQTTtoONOFF boolSWITCHTYPE ok"));
-      trc(boolSWITCHTYPE);
-      trc(F("pin number"));
-      trc(pin);
-      pinMode(pin, OUTPUT);
-      digitalWrite(pin, boolSWITCHTYPE);
+      Log.notice(F("MQTTtoONOFF boolSWITCHTYPE ok: %d" CR), boolSWITCHTYPE);
+      Log.notice(F("GPIO number: %d" CR), gpio);
+      pinMode(gpio, OUTPUT);
+      digitalWrite(gpio, boolSWITCHTYPE);
       // we acknowledge the sending by publishing the value to an acknowledgement topic
       pub(subjectGTWONOFFtoMQTT, ONOFFdata);
-    }else{
-      trc(F("MQTTtoONOFF failed json read"));
+    } else {
+      Log.error(F("MQTTtoONOFF failed json read" CR));
     }
   }
 }
-#endif
+#  endif
 
-#ifdef simpleReceiving
-void MQTTtoONOFF(char * topicOri, char * datacallback) {
-  if ((strstr(topicOri,subjectMQTTtoONOFF) != NULL) ){
+#  ifdef simpleReceiving
+void MQTTtoONOFF(char* topicOri, char* datacallback) {
+  if ((cmpToMainTopic(topicOri, subjectMQTTtoONOFF))) {
+    Log.trace(F("MQTTtoONOFF" CR));
+    char* endptr = NULL;
+    long gpio = strtol(datacallback, &endptr, 10);
+    if (datacallback == endptr)
+      gpio = ACTUATOR_ONOFF_GPIO;
 
-    trc(F("MQTTtoONOFF"));
-    int pin = strtol(datacallback, NULL, 10); // we will not be able to pass values > 4294967295
-    trc(F("pin number"));
-    trc(pin);
-    pinMode(pin, OUTPUT);
+    Log.notice(F("GPIO number: %d" CR), gpio);
+    pinMode(gpio, OUTPUT);
 
     bool ON = false;
-    if (strstr(topicOri,ONKey) != NULL) ON = true;
-    if (strstr(topicOri,OFFKey) != NULL) ON = false;
+    if (strstr(topicOri, ONKey) != NULL)
+      ON = true;
+    if (strstr(topicOri, OFFKey) != NULL)
+      ON = false;
 
-    digitalWrite(pin, ON);
+    digitalWrite(gpio, ON);
     // we acknowledge the sending by publishing the value to an acknowledgement topic
-    pub(subjectGTWONOFFtoMQTT, ON);
-  } 
+    char b = ON;
+    pub(subjectGTWONOFFtoMQTT, &b);
+  }
 }
-#endif
-
+#  endif
 
 #endif

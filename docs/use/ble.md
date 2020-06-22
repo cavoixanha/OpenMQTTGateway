@@ -39,6 +39,9 @@ Note that the gateway return one or two measurement value each time. The differe
 * Temperature
 * Moisture
 * Fertilization
+* Humidity
+* Pressure
+* Steps
 * Weight
 * Impedance
 * Battery (mi jia only)
@@ -49,26 +52,36 @@ The infos will appear like this on your MQTT broker:
 
 More info are available on [my blog](https://1technophile.blogspot.fr/2017/11/mi-flora-integration-to-openmqttgateway.html)  (especially about how it was implemented with HM10)
 
+::: tip
+The HM10 module doesn't read enough information (servicedata UUID is missing) to support Mi Scale and Mi Band. They are supported nevertheless with ESP32.
+OpenMQTTGateway publish the servicedata field of your BLE devices, with HM10 this field can be longer compared to ESP32 if the device is not recognised.
+:::
+
 ## Setting a white or black list
 A black list is a list of mac adresses that will never be published by OMG
 to set black list
-`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/set -m '{"black-list":["012314551615","4C6577889C79","4C65A6663C79"]}'`
+`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"black-list":["012314551615","4C6577889C79","4C65A6663C79"]}'`
 
 A white list is a list of mac adresses permitted to be published by OMG
 to set white list
-`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/set -m '{"white-list":["012314551615","4C65A5553C79","4C65A6663C79"]}'`
+`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"white-list":["012314551615","4C65A5553C79","4C65A6663C79"]}'`
 
 Note: if you want to filter (white or black list) on BLE sensors that are auto discovered, you need to wait for the discovery before applying the white or black list
+
+::: tip
+So as to keep your white/black list persistent you can publish it with the retain option of MQTT (-r with mosquitto_pub or retain check box of MQTT Explorer)
+`mosquitto_pub -r -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"white-list":["012314551615","4C65A5553C79","4C65A6663C79"]}'`
+:::
 
 ## Setting the time between scans and force a scan
 
 If you want to change the time between readings you can change the interval by MQTT, if you want the BLE scan every 66seconds:
 
-`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/set -m '{"interval":66000}'`
+`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"interval":66000}'`
 
 you can also force a scan to be done by the following command:
 
-`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/set -m '{"interval":0}'`
+`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"interval":0}'`
 
 Once done the previous value of interval will be recovered.
 
@@ -78,11 +91,11 @@ The default value is set into config_BT.h
 
 If you want to change the minimum RSSI value accepted for a device to be published, you can change it by MQTT. For example if you want to set -80
 
-`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/set -m '{"minrssi":-80}'`
+`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"minrssi":-80}'`
 
 you can also accept all the devices by the following command:
 
-`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/set -m '{"minrssi":0}'`
+`mosquitto_pub -t home/OpenMQTTGateway/commands/MQTTtoBT/config -m '{"minrssi":0}'`
 
 The default value is set into config_BT.h
 
