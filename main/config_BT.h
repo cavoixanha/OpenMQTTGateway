@@ -50,7 +50,8 @@ extern void MQTTtoBT(char* topicOri, JsonObject& RFdata);
 #define ServicedataMinLength 30
 
 #ifndef TimeBtw_Read
-#  define TimeBtw_Read 55555 //define default time between 2 scans
+// #  define TimeBtw_Read 55555 //define default time between 2 scans
+#  define TimeBtw_Read 16555 //define default time between 2 scans
 #endif
 
 #ifndef pubKnownBLEServiceData
