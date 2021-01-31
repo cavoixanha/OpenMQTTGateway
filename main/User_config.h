@@ -28,7 +28,7 @@
 #ifndef user_config_h
 #define user_config_h
 /*-------------------VERSION----------------------*/
-#define OMG_VERSION "version_tag"
+#define OMG_VERSION "0.94"
 
 /*-------------CONFIGURE WIFIMANAGER-------------(only ESP8266 & SONOFF RFBridge)*/
 /*
@@ -48,10 +48,10 @@
  */
 /*-------------DEFINE GATEWAY NAME BELOW IT CAN ALSO BE DEFINED IN platformio.ini----------------*/
 #ifndef Gateway_Name
-#  define Gateway_Name "OpenMQTTGateway"
+#  define Gateway_Name "OpenMQTTGatewayStairs"
 #endif
 #ifndef Gateway_Short_Name
-#  define Gateway_Short_Name "OMG"
+#  define Gateway_Short_Name "OMGStairs"
 #endif
 
 #define Base_Topic "home/"
@@ -171,7 +171,7 @@ uint8_t wifiProtocol = 0; // default mode, automatic selection
 //#define ZsensorADC     "ADC"      //ESP8266, Arduino, ESP32
 //#define ZsensorBH1750  "BH1750"   //ESP8266, Arduino, ESP32
 //#define ZsensorTSL2561 "TSL2561"  //ESP8266, Arduino, ESP32
-#define ZsensorBME280  "BME280"   //ESP8266, Arduino, ESP32
+// #define ZsensorBME280  "BME280"   //ESP8266, Arduino, ESP32
 //#define ZsensorHTU21   "HTU21"    //ESP8266, Arduino, ESP32
 //#define ZsensorDHT     "DHT"      //ESP8266, Arduino, ESP32,  Sonoff RF Bridge
 //#define ZsensorDS1820  "DS1820"   //ESP8266, Arduino, ESP32
